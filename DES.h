@@ -138,7 +138,7 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key);
 void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key);
 
 void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
-
+	
 }
 
 
@@ -193,19 +193,58 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 
 
 void IP(BYTE *in, BYTE *out) {
+	int i;
+	BYTE index, bit, mask=0x80;
 	
+	for(i=0; i<64; i++) {
+		index=(ip[i]-1)/8;
+		bit=(ip[i]-1)%8;
+		
+		if(in[index] & (mask>>bit)) { 
+			out[i/8]|=mask>>(i%8);
+		}
+	}
 }
 
 void IIP(BYTE *in, BYTE *out) {
-
+	int i;
+	BYTE index, bit, mask=0x80;
+	
+	for(i=0;i<64;i++) {
+		index=(iip[i]-1)/8;
+		bit=(iip[i]-1)%8;
+		
+		if(in[index] & (mask>>bit)) { 
+			out[i/8]|=mask>>(i%8);
+		}
+	}
 }
 
 void BtoW(BYTE *Plain64, UINT *Left32, UINT *Right32) {
-
+	int i;
+	
+	for(i=0; i<8; i++) {
+		if(i<4) 
+			*Left32|=(UINT)Plain64[i]<<(24-(i*8));
+		else
+			*Right32|=(UINT)Plain64[i]<<(56-(i*8));
+	}
 }
 
 UINT f(UINT Right32, BYTE* rKey) {
-
+	int i;
+	BYTE data[6]={0,};	/* EP에 의한48 bit output 저장*/
+	UINT out;
+	
+	EP(Right32, data);	/* 1. Expansion Permutation: EP-box */
+	
+	for(i=0; i<6; i++) { 
+		data[i]=data[i]^rKey[i];    /* 2. 48 bit XOR between data and rKey: S  -box */
+	}
+	/* 3 & 4. Straight permutation of 32-bit S-box output */
+	out=Permutation(S_Box_Transfer(data));
+	
+	return out;
 }
 
 void EP(UINT Right32, BYTE* out) {
@@ -265,11 +304,34 @@ void Swap(UINT *x, UINT *y) {
 }
 
 void WtoB(UINT Left32, UINT Right32, BYTE *out) {
-
+	int i;
+	UINT mask=0xff000000;
+	
+	for(i=0; i<8; i++) { 
+		if(i<4)
+			out[i]|=(Left32 & (mask>>(i*8)))>>(24-(i*8));
+		else 
+			out[i]|=(Right32 & (mask>>(i*8)))>>(56-(i*8));
+	}
 }
 
 void Key_Expansion(BYTE *key, BYTE round_key[16][6]) {
-
+	int i;
+	BYTE pc1_result[7]={0,};
+	UINT c=0, d=0;
+	
+	/* 키를  순열 선택1 테이블을이용해서재배치*/
+	PC1(key, pc1_result);
+	/* 56 비트의 데이터를28 비트로나누기*/
+	makeBit28(&c, &d, pc1_result);
+	
+	/* 라운드키 생성*/
+	for(i=0; i<16; i++) { 
+		c= Cir_Shift(c, i); /* 28비트 데이터를좌측으로순환 이동*/
+		d=Cir_Shift(d, i);
+		
+		PC2(c, d, round_key[i]); /* 순열 선택2 테이블을이용해서재배치*/
+	}
 }
 
 void PC1(BYTE *Key_In, BYTE *Key_Out) {

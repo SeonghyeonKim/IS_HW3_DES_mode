@@ -38,7 +38,7 @@ int main(void) {
 	#endif
 	
 	msg_len = (p_text.size() % BLOCK_SIZE) ?
-		(p_text.size() / BLOCK_SIZE + 1) * 8 :
+		(p_text.size() / BLOCK_SIZE + 1) * BLOCK_SIZE :
 			p_text.size();
 	
 	#if(BLOCK_MODE==1)
@@ -78,17 +78,26 @@ int main(void) {
 
 
 // CBC
-string DES_CBC_Enc(string, string, string, int);
-string DES_CBC_Dec(string, string, string, int);
+string DES_CBC_Enc(string p_text, string IV, string key, int msg_len) {
+	string c_text;
+	string block = IV;
+	
+	for(int i=0; i<msg_len/BLOCK_SIZE; i++) {
+		
+	
+	}
+	return c_text;
+}
+string DES_CBC_Dec(string c_text, string IV, string key, int msg_len);
 // CFB
-string DES_CFB_Enc(string, string, string, int);
-string DES_CFB_Dec(string, string, string, int);
+string DES_CFB_Enc(string p_text, string IV, string key, int msg_len);
+string DES_CFB_Dec(string c_text, string IV, string key, int msg_len);
 // OFB
-string DES_OFB_Enc(string, string, string, int);
-string DES_OFB_Dec(string, string, string, int);
+string DES_OFB_Enc(string p_text, string IV, string key, int msg_len);
+string DES_OFB_Dec(string c_text, string IV, string key, int msg_len);
 //CTR
-string DES_CTR_Enc(string, string, unsigned int, int);
-string DES_CTR_Dec(string, string, unsigned int, int);
+string DES_CTR_Enc(string p_text, string key, unsigned int ctr, int msg_len);
+string DES_CTR_Dec(string c_text, string key, unsigned int ctr, int msg_len);
 
 
 
