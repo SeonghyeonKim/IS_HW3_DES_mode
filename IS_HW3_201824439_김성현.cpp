@@ -4,6 +4,19 @@
 #define BLOCK_MODE 1	/* 1: CBC, 2: CFB, 3: OFB, 4: CTR */
 
 using namespace std;
+// CBC
+string DES_CBC_Enc(string, string, string, int);
+string DES_CBC_Dec(string, string, string, int);
+// CFB
+string DES_CFB_Enc(string, string, string, int);
+string DES_CFB_Dec(string, string, string, int);
+// OFB
+string DES_OFB_Enc(string, string, string, int);
+string DES_OFB_Dec(string, string, string, int);
+//CTR
+string DES_CTR_Enc(string, string, unsigned int, int);
+string DES_CTR_Dec(string, string, unsigned int, int);
+
 
 int main(void) {
 	string c_text, p_text, IV, d_text, key;
@@ -29,13 +42,13 @@ int main(void) {
 			p_text.size();
 	
 	#if(BLOCK_MODE==1)
-    c_text = DES_CBC_Enc(p_text, c_text, IV, key, msg_len);//DES-CBC 암호화
+    c_text = DES_CBC_Enc(p_text, IV, key, msg_len);//DES-CBC 암호화
     #elif(BLOCK_MODE==2)
-    c_text = DES_CFB_Enc(p_text, c_text, IV, key, msg_len);//DES-CFB 암호화
+    c_text = DES_CFB_Enc(p_text, IV, key, msg_len);//DES-CFB 암호화
     #elif(BLOCK_MODE==3)
-    c_text = DES_OFB_Enc(p_text, c_text, IV, key, msg_len);//DES-OFB 암호화
+    c_text = DES_OFB_Enc(p_text, IV, key, msg_len);//DES-OFB 암호화
     #else
-    c_text = DES_CTR_Enc(p_text, c_text, key, ctr, msg_len);//DES-CTR 암호화
+    c_text = DES_CTR_Enc(p_text, key, ctr, msg_len);//DES-CTR 암호화
     #endif
 
 	cout << "\nCipher Text : ";
@@ -45,13 +58,13 @@ int main(void) {
 	
 
     #if(BLOCK_MODE==1)
-    d_text = DES_CBC_Dec(c_text, d_text, IV, key, msg_len);//DES-CBC 복호화
+    d_text = DES_CBC_Dec(c_text, IV, key, msg_len);//DES-CBC 복호화
     #elif(BLOCK_MODE==2)
-    d_text = DES_CFB_Dec(c_text, d_text, IV, key, msg_len);//DES-CFB 복호화
+    d_text = DES_CFB_Dec(c_text, IV, key, msg_len);//DES-CFB 복호화
     #elif(BLOCK_MODE==3)
-    d_text = DES_OFB_Dec(c_text, d_text, IV, key, msg_len);//DES-CFB 복호화
+    d_text = DES_OFB_Dec(c_text, IV, key, msg_len);//DES-CFB 복호화
     #else
-    d_text = DES_CTR_Dec(c_text, d_text, key, ctr, msg_len);//DES-CTR 복호화
+    d_text = DES_CTR_Dec(c_text, key, ctr, msg_len);//DES-CTR 복호화
     #endif
 
 	cout << "\nPlain Text : ";
@@ -61,5 +74,21 @@ int main(void) {
 
 	return 0;
 } 
+
+
+
+// CBC
+string DES_CBC_Enc(string, string, string, int);
+string DES_CBC_Dec(string, string, string, int);
+// CFB
+string DES_CFB_Enc(string, string, string, int);
+string DES_CFB_Dec(string, string, string, int);
+// OFB
+string DES_OFB_Enc(string, string, string, int);
+string DES_OFB_Dec(string, string, string, int);
+//CTR
+string DES_CTR_Enc(string, string, unsigned int, int);
+string DES_CTR_Dec(string, string, unsigned int, int);
+
 
 
