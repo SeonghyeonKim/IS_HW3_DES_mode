@@ -151,7 +151,38 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
 	}
 	// cout << endl;
-	
+	/* 초기 순열 */
+	IP(p_text, data);
+
+	/* 64bit 블록을 32bit로 나눔 */
+	BtoW(data, &L, &R);
+
+	/* DES Round 1~16 */
+	for (i = 0; i<DES_ROUND; i++) {
+		L=L^f(R, round_key[i]);
+		 
+		/* 마지막 라운드는 Swap을 하지 않는다. */
+		if (i != DES_ROUND - 1) {
+			Swap(&L, &R);
+		}
+		bitset<32> x((int)L);
+		bitset<32> y((int)R);
+		// cout << "L[" << i << "]" << x << "\t" << "R[" << i << "]" << y << endl;
+	}
+
+	for (int i = 0; i < 8; i++)
+		data[i] = 0;
+
+	/* 32bit로 나누어진 블록을 다시 64bit 블록으로 변환 */
+	WtoB(L, R, data);
+
+	/* 역 초기 순열 */
+	IIP(data, result);
+	// cout << endl << endl << "복호화 결과" << endl;
+	for (int j = 0; j < 8; j++) {
+		bitset<8> x((int)result[j]);
+		// cout << j << "\t :: " << x << endl;
+	}
 }
 
 
