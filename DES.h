@@ -138,6 +138,19 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key);
 void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key);
 
 void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
+	int i;
+	BYTE data[BLOCK_SIZE] = { 0, };
+	BYTE round_key[16][6] = { 0, };
+	UINT L = 0, R = 0;
+	
+	/* 라운드 키 생성 */
+	Key_Expansion(key, round_key);
+
+	for (int j = 0; j < 16; j++) {
+		bitset<6> x((int)round_key[j]);
+		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
+	}
+	// cout << endl;
 	
 }
 
