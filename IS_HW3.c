@@ -4,6 +4,19 @@
 #include "DES.h"
 #define BLOCK_MODE 1	/* 1: CBC, 2: CFB, 3: OFB, 4: CTR */
 
+// CBC
+void DES_CBC_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_CBC_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
+// CFB
+void DES_CFB_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_CFB_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
+// OFB
+void DES_OFB_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_OFB_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
+//CTR
+void DES_CTR_Enc(BYTE*, BYTE*, BYTE*, UINT64, int);
+void DES_CTR_Dec(BYTE*, BYTE*, BYTE*, UINT64, int);
+
 int main()
 {
     int i;
@@ -71,4 +84,43 @@ int main()
 
     return 0;
 }
+
+
+
+// CBC
+void DES_CBC_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+void DES_CBC_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+// CFB
+void DES_CFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+void DES_CFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+// OFB
+void DES_OFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+void DES_OFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+//CTR
+void DES_CTR_Enc(BYTE* p_text, BYTE* c_text, BYTE* key, UINT64 ctr, int msg_len) {
+	
+}
+
+void DES_CTR_Dec(BYTE* c_text, BYTE* d_text, BYTE* key, UINT64 ctr, int msg_len) {
+	
+}
+
 
