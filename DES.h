@@ -146,11 +146,6 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 	/* 라운드 키 생성 */
 	Key_Expansion(key, round_key);
 
-	for (int j = 0; j < 16; j++) {
-		bitset<6> x((int)round_key[j]);
-		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
-	}
-	// cout << endl;
 	/* 초기 순열 */
 	IP(p_text, data);
 
@@ -195,11 +190,6 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 	/* 라운드 키 생성 */
 	Key_Expansion(key, round_key);
 
-	for (int j = 0; j < 16; j++) {
-		bitset<6> x((int)round_key[j]);
-		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
-	}
-	// cout << endl;
 	/* 초기 순열 */
 	IP(c_text, data);
 

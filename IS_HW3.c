@@ -33,13 +33,13 @@ int main()
 	gets((char *)p_text);
     /* 비밀키 입력 */
     printf("비밀키 입력: ");
-	scanf_s("%s", key);
+	scanf("%s", key);
     fflush(stdin);
 
     #if(BLOCK_MODE!=4)
     /* 초기화 벡터 입력 */
     printf("초기화 벡터 입력: ");
-	scanf_s("%s", IV);
+	scanf("%s", IV);
     #else
     /* 카운터 입력 */
     printf("ctr 입력: ");
@@ -85,11 +85,18 @@ int main()
     return 0;
 }
 
-
+//DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key);
 
 // CBC
 void DES_CBC_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i;
+	BYTE* chain = IV;
 	
+	for(i=0; i<msg_len; i++) {
+		p_text+(i*BLOCK_SIZE) ^= chain;
+		DES_Encryption(p_text+(i*BLOCK_SIZE), c_text+(i*BLOCK_SIZE), key);
+		chain = c_text+(i*BLOCK_SIZE);
+	}
 }
 
 void DES_CBC_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {

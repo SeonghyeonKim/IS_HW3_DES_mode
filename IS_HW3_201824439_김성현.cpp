@@ -1,103 +1,149 @@
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "DES.h"
-#include <string>
 #define BLOCK_MODE 1	/* 1: CBC, 2: CFB, 3: OFB, 4: CTR */
 
-using namespace std;
 // CBC
-string DES_CBC_Enc(string, string, string, int);
-string DES_CBC_Dec(string, string, string, int);
+void DES_CBC_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_CBC_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
 // CFB
-string DES_CFB_Enc(string, string, string, int);
-string DES_CFB_Dec(string, string, string, int);
+void DES_CFB_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_CFB_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
 // OFB
-string DES_OFB_Enc(string, string, string, int);
-string DES_OFB_Dec(string, string, string, int);
+void DES_OFB_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
+void DES_OFB_Dec(BYTE*, BYTE*, BYTE*, BYTE*, int);
 //CTR
-string DES_CTR_Enc(string, string, unsigned int, int);
-string DES_CTR_Dec(string, string, unsigned int, int);
+void DES_CTR_Enc(BYTE*, BYTE*, BYTE*, UINT64, int);
+void DES_CTR_Dec(BYTE*, BYTE*, BYTE*, UINT64, int);
 
+int main()
+{
+    int i;
+    BYTE p_text[128]={0,};
+    BYTE key[9]={0,};
+    BYTE IV[9]={0,};
+    BYTE c_text[128]={0,};
+    BYTE d_text[128]={0,};
+    int msg_len;
+    UINT64 ctr=0;
 
-int main(void) {
-	string c_text, p_text, IV, d_text, key;
-	unsigned int ctr;
-	int msg_len;
-	
-	cout << "Input plain text : ";
-	cin >> p_text;
-	
-	cout << "Input Key : ";
-	cin >> key; 
-	
-	#if(BLOCK_MODE!=4)
-	cout << "Input initial vector : ";
-	cin >> IV;	
-	#else
-	cout << "Input counter : ";
-	cin >> ctr; 
-	#endif
-	
-	msg_len = (p_text.size() % BLOCK_SIZE) ?
-		(p_text.size() / BLOCK_SIZE + 1) * BLOCK_SIZE :
-			p_text.size();
-	
-	#if(BLOCK_MODE==1)
-    c_text = DES_CBC_Enc(p_text, IV, key, msg_len);//DES-CBC 암호화
-    #elif(BLOCK_MODE==2)
-    c_text = DES_CFB_Enc(p_text, IV, key, msg_len);//DES-CFB 암호화
-    #elif(BLOCK_MODE==3)
-    c_text = DES_OFB_Enc(p_text, IV, key, msg_len);//DES-OFB 암호화
+    /* 평문 입력 */
+    printf("평문 입력: ");
+	gets((char *)p_text);
+    /* 비밀키 입력 */
+    printf("비밀키 입력: ");
+	scanf("%s", key);
+    fflush(stdin);
+
+    #if(BLOCK_MODE!=4)
+    /* 초기화 벡터 입력 */
+    printf("초기화 벡터 입력: ");
+	scanf("%s", IV);
     #else
-    c_text = DES_CTR_Enc(p_text, key, ctr, msg_len);//DES-CTR 암호화
+    /* 카운터 입력 */
+    printf("ctr 입력: ");
+	scanf("%u", &ctr);
     #endif
 
-	cout << "\nCipher Text : ";
-	for(int i=0; i<msg_len; i++)
-		cout << c_text[i];
-	cout << "\n";
+/* 메시지 길이 계산 */
+    msg_len=(strlen((char *)p_text) % BLOCK_SIZE) ?
+                  ((strlen((char *)p_text) / BLOCK_SIZE +1)*8):
+                  strlen((char *)p_text);
+    #if(BLOCK_MODE==1)
+    DES_CBC_Enc(p_text, c_text, IV, key, msg_len);//DES-CBC 암호화
+    #elif(BLOCK_MODE==2)
+    DES_CFB_Enc(p_text, c_text, IV, key, msg_len);//DES-CFB 암호화
+    #elif(BLOCK_MODE==3)
+    DES_OFB_Enc(p_text, c_text, IV, key, msg_len);//DES-OFB 암호화
+    #else
+    DES_CTR_Enc(p_text, c_text, key, ctr, msg_len);//DES-CTR 암호화
+    #endif
+	
+    /* 암호문 출력 */
+    printf("\n암호문: ");
+    for(i=0; i<msg_len; i++)
+        printf("%c", c_text[i]);
+    printf("\n");
+
 	
 
     #if(BLOCK_MODE==1)
-    d_text = DES_CBC_Dec(c_text, IV, key, msg_len);//DES-CBC 복호화
+    DES_CBC_Dec(c_text, d_text, IV, key, msg_len);//DES-CBC 복호화
     #elif(BLOCK_MODE==2)
-    d_text = DES_CFB_Dec(c_text, IV, key, msg_len);//DES-CFB 복호화
+    DES_CFB_Dec(c_text, d_text, IV, key, msg_len);//DES-CFB 복호화
     #elif(BLOCK_MODE==3)
-    d_text = DES_OFB_Dec(c_text, IV, key, msg_len);//DES-CFB 복호화
+    DES_OFB_Dec(c_text, d_text, IV, key, msg_len);//DES-CFB 복호화
     #else
-    d_text = DES_CTR_Dec(c_text, key, ctr, msg_len);//DES-CTR 복호화
+    DES_CTR_Dec(c_text, d_text, key, ctr, msg_len);//DES-CTR 복호화
     #endif
 
-	cout << "\nPlain Text : ";
-	for(int i=0; i<msg_len; i++)
-		cout << d_text[i];
-	cout << "\n";
+    /* 복호문 출력 */
+    printf("\n복호문: ");
+    for(i=0; i<msg_len; i++)
+        printf("%c", d_text[i]);
+    printf("\n");
 
-	return 0;
-} 
-
-
+    return 0;
+}
 
 // CBC
-string DES_CBC_Enc(string p_text, string IV, string key, int msg_len) {
-	string c_text;
-	string block = IV;
+void DES_CBC_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
+	BYTE input_text[128] = {0,};
 	
-	for(int i=0; i<msg_len/BLOCK_SIZE; i++) {
+	for(i=0; i<msg_len; i++) {
+		for(j=0; j<BLOCK_SIZE; j++) {
+			input_text[i*BLOCK_SIZE+j] = p_text[i*BLOCK_SIZE+j] ^ chain[j];
+		}
 		
-	
+		DES_Encryption(input_text+(i*BLOCK_SIZE), c_text+(i*BLOCK_SIZE), key);
+		chain = c_text+(i*BLOCK_SIZE);
 	}
-	return c_text;
 }
-string DES_CBC_Dec(string c_text, string IV, string key, int msg_len);
-// CFB
-string DES_CFB_Enc(string p_text, string IV, string key, int msg_len);
-string DES_CFB_Dec(string c_text, string IV, string key, int msg_len);
-// OFB
-string DES_OFB_Enc(string p_text, string IV, string key, int msg_len);
-string DES_OFB_Dec(string c_text, string IV, string key, int msg_len);
-//CTR
-string DES_CTR_Enc(string p_text, string key, unsigned int ctr, int msg_len);
-string DES_CTR_Dec(string c_text, string key, unsigned int ctr, int msg_len);
 
+void DES_CBC_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
+	BYTE input_text[128] = {0,};
+	
+	for(i=0; i<msg_len; i++) {
+		DES_Decryption(input_text+(i*BLOCK_SIZE), d_text+(i*BLOCK_SIZE), key);
+		
+		for(j=0; j<BLOCK_SIZE; j++) {
+			d_text[i*BLOCK_SIZE+j] = d_text[i*BLOCK_SIZE+j] ^ chain[j];
+		}
+		
+		chain = c_text+(i*BLOCK_SIZE);
+	}
+}
+
+// CFB
+void DES_CFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+void DES_CFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+// OFB
+void DES_OFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+void DES_OFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	
+}
+
+//CTR
+void DES_CTR_Enc(BYTE* p_text, BYTE* c_text, BYTE* key, UINT64 ctr, int msg_len) {
+	
+}
+
+void DES_CTR_Dec(BYTE* c_text, BYTE* d_text, BYTE* key, UINT64 ctr, int msg_len) {
+	
+}
 
 
