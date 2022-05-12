@@ -160,9 +160,6 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 		if (i != DES_ROUND - 1) {
 			Swap(&L, &R);
 		}
-		bitset<32> x((int)L);
-		bitset<32> y((int)R);
-		// cout << "L[" << i << "]" << x << "\t" << "R[" << i << "]" << y << endl;
 	}
 
 	for (int i = 0; i < 8; i++)
@@ -173,11 +170,6 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 
 	/* 역 초기 순열 */
 	IIP(data, result);
-	// cout << endl << endl << "복호화 결과" << endl;
-	for (int j = 0; j < 8; j++) {
-		bitset<8> x((int)result[j]);
-		// cout << j << "\t :: " << x << endl;
-	}
 }
 
 
@@ -204,10 +196,7 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 		/* 마지막 라운드는 Swap을 하지 않는다. */
 		if (i != DES_ROUND - 1) {
 			Swap(&L, &R);
-		}
-		bitset<32> x((int)L);
-		bitset<32> y((int)R);
-		// cout << "L[" << i << "]" << x << "\t" << "R[" << i << "]" << y << endl;
+		}	
 	}
 
 	for (int i = 0; i < 8; i++)
@@ -218,11 +207,6 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 
 	/* 역 초기 순열 */
 	IIP(data, result);
-	// cout << endl << endl << "복호화 결과" << endl;
-	for (int j = 0; j < 8; j++) {
-		bitset<8> x((int)result[j]);
-		// cout << j << "\t :: " << x << endl;
-	}
 }
 
 

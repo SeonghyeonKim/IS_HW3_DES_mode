@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "DES.h"
-#define BLOCK_MODE 1	/* 1: CBC, 2: CFB, 3: OFB, 4: CTR */
+#define BLOCK_MODE 3	/* 1: CBC, 2: CFB, 3: OFB, 4: CTR */
 
 // CBC
 void DES_CBC_Enc(BYTE*, BYTE*, BYTE*, BYTE*, int);
@@ -120,20 +120,64 @@ void DES_CBC_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
 
 // CFB
 void DES_CFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
 	
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
+		DES_Encryption(chain, c_text+(i*BLOCK_SIZE), key);
+		
+		for(j=0; j<BLOCK_SIZE; j++) {
+			c_text[i*BLOCK_SIZE+j] = c_text[i*BLOCK_SIZE+j] ^ p_text[i*BLOCK_SIZE+j];
+		}
+		
+		chain = c_text+(i*BLOCK_SIZE);
+	}
 }
 
 void DES_CFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
 	
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
+		DES_Encryption(chain, d_text+(i*BLOCK_SIZE), key);
+		
+		for(j=0; j<BLOCK_SIZE; j++) {
+			d_text[i*BLOCK_SIZE+j] = d_text[i*BLOCK_SIZE+j] ^ c_text[i*BLOCK_SIZE+j];
+		}
+		
+		chain = c_text+(i*BLOCK_SIZE);
+	}
 }
 
 // OFB
 void DES_OFB_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
 	
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
+		DES_Encryption(chain, c_text+(i*BLOCK_SIZE), key);
+		
+		chain = c_text+(i*BLOCK_SIZE);
+		
+		for(j=0; j<BLOCK_SIZE; j++) {
+			c_text[i*BLOCK_SIZE+j] = c_text[i*BLOCK_SIZE+j] ^ p_text[i*BLOCK_SIZE+j];
+		}
+	}
 }
 
 void DES_OFB_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
+	int i, j;
+	BYTE* chain = IV;
 	
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
+		DES_Encryption(chain, d_text+(i*BLOCK_SIZE), key);
+		
+		chain = d_text+(i*BLOCK_SIZE);
+		
+		for(j=0; j<BLOCK_SIZE; j++) {
+			d_text[i*BLOCK_SIZE+j] = c_text[i*BLOCK_SIZE+j] ^ d_text[i*BLOCK_SIZE+j];
+		}
+	}
 }
 
 //CTR
