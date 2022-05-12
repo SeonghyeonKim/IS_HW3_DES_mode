@@ -30,7 +30,7 @@ int main()
 
     /* 평문 입력 */
     printf("평문 입력: ");
-	gets_s((char *)p_text, 10);
+	gets((char *)p_text);
     /* 비밀키 입력 */
     printf("비밀키 입력: ");
 	scanf("%s", key);
@@ -93,7 +93,7 @@ void DES_CBC_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
 	BYTE* chain = IV;
 	BYTE input_text[128] = {0,};
 	
-	for(i=0; i<msg_len; i++) {
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
 		for(j=0; j<BLOCK_SIZE; j++) {
 			input_text[i*BLOCK_SIZE+j] = p_text[i*BLOCK_SIZE+j] ^ chain[j];
 		}
@@ -106,10 +106,9 @@ void DES_CBC_Enc(BYTE* p_text, BYTE* c_text, BYTE* IV, BYTE* key, int msg_len) {
 void DES_CBC_Dec(BYTE* c_text, BYTE* d_text, BYTE* IV, BYTE* key, int msg_len) {
 	int i, j;
 	BYTE* chain = IV;
-	BYTE input_text[128] = {0,};
 	
-	for(i=0; i<msg_len; i++) {
-		DES_Decryption(input_text+(i*BLOCK_SIZE), d_text+(i*BLOCK_SIZE), key);
+	for(i=0; i<msg_len/BLOCK_SIZE; i++) {
+		DES_Decryption(c_text+(i*BLOCK_SIZE), d_text+(i*BLOCK_SIZE), key);
 		
 		for(j=0; j<BLOCK_SIZE; j++) {
 			d_text[i*BLOCK_SIZE+j] = d_text[i*BLOCK_SIZE+j] ^ chain[j];
