@@ -30,7 +30,7 @@ int main()
 
     /* 평문 입력 */
     printf("평문 입력: ");
-	gets((char *)p_text);
+	gets_s((char *)p_text, 10);
     /* 비밀키 입력 */
     printf("비밀키 입력: ");
 	scanf("%s", key);
