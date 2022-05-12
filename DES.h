@@ -146,11 +146,6 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 	/* 라운드 키 생성 */
 	Key_Expansion(key, round_key);
 
-	for (int j = 0; j < 16; j++) {
-		bitset<6> x((int)round_key[j]);
-		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
-	}
-	// cout << endl;
 	/* 초기 순열 */
 	IP(p_text, data);
 
@@ -165,24 +160,13 @@ void DES_Encryption(BYTE *p_text, BYTE *result, BYTE *key) {
 		if (i != DES_ROUND - 1) {
 			Swap(&L, &R);
 		}
-		bitset<32> x((int)L);
-		bitset<32> y((int)R);
-		// cout << "L[" << i << "]" << x << "\t" << "R[" << i << "]" << y << endl;
 	}
-
-	for (int i = 0; i < 8; i++)
-		data[i] = 0;
 
 	/* 32bit로 나누어진 블록을 다시 64bit 블록으로 변환 */
 	WtoB(L, R, data);
 
 	/* 역 초기 순열 */
 	IIP(data, result);
-	// cout << endl << endl << "복호화 결과" << endl;
-	for (int j = 0; j < 8; j++) {
-		bitset<8> x((int)result[j]);
-		// cout << j << "\t :: " << x << endl;
-	}
 }
 
 
@@ -195,11 +179,6 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 	/* 라운드 키 생성 */
 	Key_Expansion(key, round_key);
 
-	for (int j = 0; j < 16; j++) {
-		bitset<6> x((int)round_key[j]);
-		// cout << "ROUDN_KEY[" << j << "] :: \t" << x << endl;
-	}
-	// cout << endl;
 	/* 초기 순열 */
 	IP(c_text, data);
 
@@ -215,24 +194,13 @@ void DES_Decryption(BYTE *c_text, BYTE *result, BYTE *key) {
 		if (i != DES_ROUND - 1) {
 			Swap(&L, &R);
 		}
-		bitset<32> x((int)L);
-		bitset<32> y((int)R);
-		// cout << "L[" << i << "]" << x << "\t" << "R[" << i << "]" << y << endl;
 	}
-
-	for (int i = 0; i < 8; i++)
-		data[i] = 0;
 
 	/* 32bit로 나누어진 블록을 다시 64bit 블록으로 변환 */
 	WtoB(L, R, data);
 
 	/* 역 초기 순열 */
 	IIP(data, result);
-	// cout << endl << endl << "복호화 결과" << endl;
-	for (int j = 0; j < 8; j++) {
-		bitset<8> x((int)result[j]);
-		// cout << j << "\t :: " << x << endl;
-	}
 }
 
 
